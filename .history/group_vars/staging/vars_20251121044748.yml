@@ -1,0 +1,15 @@
+---
+# Staging environment configuration
+environment: staging
+git_branch: develop
+app_port: 3000
+domain_name: staging.yourproject.com
+ssl_email: devops@yourproject.com
+enable_debug: true
+
+# CRITICAL: CloudWatch Log Group Naming (EXACT FORMAT REQUIRED)
+# Format: /ec2/{environment}/{project-name}/{component}
+cloudwatch_log_groups:
+  app: "/ec2/staging/{{ project_name }}/app"
+  nginx_access: "/ec2/staging/{{ project_name }}/nginx-access"
+  nginx_error: "/ec2/staging/{{ project_name }}/nginx-error"

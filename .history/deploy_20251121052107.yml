@@ -1,0 +1,87 @@
+cat > deploy.yml << 'EOF'
+---
+- name: Universal Deployment Playbook for Staging and Production
+  hosts: all
+  become: yes
+  gather_facts: yes
+  
+  vars:
+    git_deploy_key_path: "/tmp/git_deploy_key_{{ ansible_date_time.epoch }}"
+  
+  pre_tasks:
+    - name: Display deployment information
+      debug:
+        msg:
+          - "========================================="
+          - "🚀 DEPLOYMENT STARTING"
+          - "Environment: {{ environment | upper }}"
+          - "Project: {{ project_name }}"
+          - "Server: {{ inventory_hostname }}"
+          - "Domain: {{ domain_name }}"
+          - "Branch: {{ git_branch }}"
+          - "========================================="
+    
+    - name: Write Git deploy key if available
+      copy:
+        content: "{{ vault_git_deploy_key }}"
+        dest: "{{ git_deploy_key_path }}"
+        mode: '0600'
+      no_log: true
+      when: vault_git_deploy_key is defined
+    
+    - name: Configure SSH for GitHub
+      blockinfile:
+        path: /root/.ssh/config
+        create: yes
+        mode: '0600'
+        block: |
+          Host github.com
+            IdentityFile {{ git_deploy_key_path }}
+            StrictHostKeyChecking no
+      when: vault_git_deploy_key is defined
+
+  roles:
+    - role: dependencies
+      tags: ['dependencies', 'setup']
+    
+    - role: app-deployment
+      tags: ['app', 'deployment']
+    
+    - role: nginx
+      tags: ['nginx', 'web']
+    
+    - role: ssl
+      tags: ['ssl', 'certificates']
+    
+    - role: cloudwatch
+      tags: ['cloudwatch', 'logs', 'monitoring']
+  
+  post_tasks:
+    - name: Remove Git deploy key
+      file:
+        path: "{{ git_deploy_key_path }}"
+        state: absent
+      no_log: true
+    
+    - name: Verify application
+      uri:
+        url: "http://localhost:{{ app_port }}"
+        status_code: 200
+      register: app_check
+      retries: 5
+      delay: 3
+      ignore_errors: yes
+    
+    - name: Deployment Summary
+      debug:
+        msg:
+          - "========================================="
+          - "✅ DEPLOYMENT COMPLETE"
+          - "Environment: {{ environment }}"
+          - "Domain: https://{{ domain_name }}"
+          - "CloudWatch Logs:"
+          - "  {{ cloudwatch_log_groups.app }}"
+          - "  {{ cloudwatch_log_groups.nginx_access }}"
+          - "  {{ cloudwatch_log_groups.nginx_error }}"
+          - "========================================="
+EOF

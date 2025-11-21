@@ -1,0 +1,43 @@
+cat > roles/ssl/tasks/main.yml << 'EOF'
+---
+- name: Check if SSL certificate exists
+  stat:
+    path: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+  register: ssl_cert_check
+
+- name: Obtain SSL certificate with Certbot
+  command: >
+    certbot --nginx
+    --non-interactive
+    --agree-tos
+    --email {{ ssl_email }}
+    --domains {{ domain_name }}
+    --redirect
+  when: not ssl_cert_check.stat.exists
+  register: certbot_result
+  ignore_errors: yes
+
+- name: Setup Certbot renewal cron job
+  cron:
+    name: "Certbot SSL renewal"
+    job: "certbot renew --quiet --post-hook 'systemctl reload nginx'"
+    minute: "0"
+    hour: "2"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    user: root
+
+- name: Test Certbot renewal
+  command: certbot renew --dry-run
+  register: renewal_test
+  changed_when: false
+  ignore_errors: t
+
+- name: Display SSL status
+  debug:
+    msg:
+      - "SSL Certificate Status: {{ 'Installed' if ssl_cert_check.stat.exists else 'Not Installed (DNS may not be configured)' }}"
+      - "Domain: {{ domain_name }}"
+      - "Auto-renewal: Configured (daily at 2 AM)"
+      - "Note: DNS must point to {{ ansible_host }} for SSL to work"

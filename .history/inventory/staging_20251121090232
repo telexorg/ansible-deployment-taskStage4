@@ -1,0 +1,5 @@
+[staging]
+staging-server ansible_host=54.83.150.207 ansible_user=toranaga ansible_password="{{ vault_ansible_password }}" ansible_become_password="{{ vault_ansible_become_password }}"
+
+[staging:vars]
+env_name=staging

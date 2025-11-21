@@ -1,0 +1,12 @@
+---
+# Common variables
+ansible_python_interpreter: /usr/bin/python3
+git_repo: "git@github.com:your-org/your-app-repo.git"
+app_directory: "/var/www/app"
+app_user: "toranaga"
+
+# Your project name - CRITICAL FOR CLOUDWATCH
+project_name: "toranagaTask"  
+
+# Node.js/Python versions
+nodejs_version: "18"

@@ -1,0 +1,19 @@
+
+---
+# Common variables
+ansible_python_interpreter: /usr/bin/python3
+
+
+project_name: "toranagaTask"  
+
+staging.yourproject
+git_repo: "git@github.com:your-org/your-repo.git"  
+app_directory: "/var/www/{{ project_name }}"
+app_user: "ubuntu"
+app_port: 3000
+
+# Node.js Configuration
+nodejs_version: "18"
+pm2_app_name: "{{ project_name }}"
+
+ssl_email: "devops@yourcompany.com"

@@ -1,0 +1,37 @@
+
+---
+environment: staging
+git_branch: staging
+domain_name: 
+enable_debug: true
+
+
+# Format: /ec2/{environment}/{project-name}/{component}
+cloudwatch_log_groups:
+  app: "/ec2/staging/{{ project_name }}/app"
+  nginx_access: "/ec2/staging/{{ project_name }}/nginx-access"
+  nginx_error: "/ec2/staging/{{ project_name }}/nginx-error"
+
+aws_region: "us-east-1"  
+
+
+
+
+
+---
+environment: staging
+git_branch: staging
+domain_name: stagingtoranaga.duckdns.org
+app_directory: "/var/www/toranagaTask-staging"
+app_port: 3000
+app_user: "ubuntu"
+pm2_app_name: "toranagaTask-staging"
+enable_debug: true
+
+# CRITICAL: CloudWatch Log Groups (EXACT FORMAT)
+cloudwatch_log_groups:
+  app: "/ec2/staging/toranagaTask/app"
+  nginx_access: "/ec2/staging/toranagaTask/nginx-access"
+  nginx_error: "/ec2/staging/toranagaTask/nginx-error"
+
+aws_region: "us-west-1"

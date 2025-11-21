@@ -1,0 +1,14 @@
+
+---
+environment: production
+git_branch: main
+domain_name: yourproject.com  # Your production domain
+enable_debug: false
+
+# CRITICAL: CloudWatch Log Groups (EXACT FORMAT)
+cloudwatch_log_groups:
+  app: "/ec2/production/{{ project_name }}/app"
+  nginx_access: "/ec2/production/{{ project_name }}/nginx-access"
+  nginx_error: "/ec2/production/{{ project_name }}/nginx-error"
+
+aws_region: "us-east-1"  # Change to your region

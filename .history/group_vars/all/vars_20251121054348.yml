@@ -1,0 +1,20 @@
+
+
+
+
+
+
+---
+ansible_python_interpreter: /usr/bin/python3
+
+# Project Configuration
+project_name: "toranagaTask"
+
+# Git Repository (Private - requires deploy key)
+git_repo: "git@github.com:telexorg/telex_fe.git"
+
+# Node.js Configuration
+nodejs_version: "18"
+
+# SSL Settings
+ssl_email: "codewithjoshnick@gmail.com"

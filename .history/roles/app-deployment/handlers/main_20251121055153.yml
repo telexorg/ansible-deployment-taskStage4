@@ -1,0 +1,6 @@
+
+---
+- name: restart application
+  command: pm2 restart {{ pm2_app_name }}
+  become_user: "{{ app_user }}"
+  ignore_errors: true

@@ -1,0 +1,39 @@
+
+[production]
+production-server ansible_host=54.83.150.207 ansible_user=ubuntu ansible_ssh_private_key_file=/home/joshnick/Downloads/ansibleServerTask.pem
+
+[production:vars]
+env_name=production
+
+
+
+
+
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA2mpg2qsG1FTQcBj+9JAmpPz9jQx1cUelYTXf90yUyyJyUznr
+0x6x+qed1deffvNdCBqoOBF1GsuCjQkRbME+JkxUc9rvBNoylb3NEJrhUSvcvZud
+fwIX/O1iKXk2g688T4sy5fC2dT68BZqJKyMy4WF2f0+UC2Ln2gqTJrkhJQYw/Coc
+HOBOuJuQrzazkYPqJ74CxM3xwjdIyHhDEtJ1nkO+BwOu/0uQPDqsK3OGpJ1G2umd
+Y1RxcxapYtFR4VUiNaaqFXdBYN9SCY41Zz7FdrOIL+Ai+hFJW8EcVbsOruCEI68r
+S4vTbw9r5IWO6JPq4NkpVsAiU8z5XfHUE5tUdQIDAQABAoIBAQCchUFVUty5CvK4
+cmE695aKA7bb/oKnJFXSvR38BchXbh8Jn2dtSwD2hGnqlfP5sQMJTLkiPPhztEWh
+Nk9jZXRZU7ftsoY5LvizMGolLSis18b/peYO33w7SA5hdDjp04lf43wdJgxLJyLs
+zRrha/8JXqPhhjCsnDtUmOFtDZw//8UV24KJScghVBzg5N941AAmZss4zFCTq4vZ
+hcOq/xCgruecSnPsd2y62DKnBspf5r3SQ3MrcsNP2xBmuq8egiGi5HDoLIhmfMqQ
+XSgkH40rUF3+o2rhcA9l6AMsYcAUplBKXICfDtwB5w4L3tmcftkOMynwXhqS6++1
+7mdNlIkBAoGBAP3RQu+vx+0guEHyI3g30XvQcWLcqJoHDglHEwoKI8MfHAJXOT5d
+5H1QNAdDTHSGq/YIQrJ6G6CyCygSRfX0S0LpdUBDWWbz8X+L6gzg7uy6V2Qj9Txz
+CYf7pyMfI6FyAcVo25gJO+d5jW3IBV1PWsZ90NM6cSZ/yHwqsWzXzDZBAoGBANxL
+L22Xpf94vYbHZoIZTEEvD7JnYe64YAP7SjDerI05nDHdqjli6XfvnO7KyVBL8+lu
+Rzx2Rj9opWt9kAgDpFaRZDB1Oz8iuEcwBFdwUb9UfDp3R/RzI/FVEnY13IvwuYsO
+raSKaeUN1xHuXBcLo86iL2QdzUUMr/sWtdBMl9k1AoGBAKFnD+SxaDYvh1xQKSQK
+gsj0TRYr8X85G0DlFINe3Uz4HGyUoM87D9BsTxmLPzQea32h1R//rE/syFFsBVcZ
+ST68jJYX/eMNHzYXd/dGlkitWmNQxmLxWE9DxQ39gD/q6ptpSbMNtC1HS5tTBa5H
+hxcP7NpVoJx1x7zFvVvUgoTBAoGAeJ9eh+aqiTlmpZ8XfRM3EtYfBTPghuNEB8oX
+9Kxo1Sd/ZDqY07VaW0bDqmk1VBdSpjWxIeUtT9kQAsyNCiZcXN5der8mQsrTFn+v
+UOV6jYZIQ4c+yhYlzyYi5sFVUvbr0b2mzNrRYw9x/SqEGEZSWnmp82ryE+X/kj/8
+K+NUniUCgYBLziHyv5N0iVjoMaaxqfL9++aWvceqObmaoc7XLtJprd73lYbVwWkA
+bhMQTI1bm7mC/IQXYvK8Yo+tEvz78JzJlUbuxwqu+OwiYbBPOjtx6UXu1iKARYrE
+LVDPq+rZyfJp1Y2ltK/kM0cumSUAYRaVNgf95KPDouxdty4i8213/A==
+-----END RSA PRIVATE KEY-----joshnick@buyeto:~$

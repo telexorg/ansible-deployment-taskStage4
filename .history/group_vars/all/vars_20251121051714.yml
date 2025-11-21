@@ -1,0 +1,20 @@
+
+---
+# Common variables
+ansible_python_interpreter: /usr/bin/python3
+
+# Project Configuration - CHANGE THESE
+project_name: "toranagaTask"  # Your team's project name (momento/telex/etc)
+
+# Application Settings
+git_repo: "git@github.com:your-org/your-repo.git"  # Your repo
+app_directory: "/var/www/{{ project_name }}"
+app_user: "ubuntu"
+app_port: 3000
+
+# Node.js Configuration
+nodejs_version: "18"
+pm2_app_name: "{{ project_name }}"
+
+# SSL Settings
+ssl_email: "devops@yourcompany.com"

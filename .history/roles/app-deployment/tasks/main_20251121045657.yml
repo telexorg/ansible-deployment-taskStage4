@@ -1,0 +1,11 @@
+---
+# Task 2.3: Secrets Injection
+- name: Copy environment-specific .env file to server
+  copy:
+    src: "{{ playbook_dir }}/secrets/{{ environment }}.env"
+    dest: "{{ app_directory }}/.env"
+    mode: '0600'
+    owner: "{{ app_user }}"
+  notify: restart application
+
+# More tasks will be added by Application Engineer

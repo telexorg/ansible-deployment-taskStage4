@@ -1,0 +1,5 @@
+[production]
+prod-server ansible_host=13.48.52.188 ansible_user=toranaga
+
+[production:vars]
+environment=production

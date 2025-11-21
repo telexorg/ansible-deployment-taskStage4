@@ -1,0 +1,96 @@
+---
+- name: Universal Deployment Playbook for Staging and Production
+  hosts: all
+  become: yes
+  gather_facts: yes
+  
+  vars:
+    deployment_key_path: "/tmp/deployment_key_{{ ansible_date_time.epoch }}"
+  
+  pre_tasks:
+    - name: Display deployment information
+      debug:
+        msg: 
+          - "========================================="
+          - "Deploying to: {{ environment | upper }}"
+          - "Project: {{ project_name }}"
+          - "Server: {{ inventory_hostname }}"
+          - "Domain: {{ domain_name }}"
+          - "========================================="
+    
+    - name: Write encrypted deployment SSH key to temporary location
+      copy:
+        content: "{{ vault_deployment_key }}"
+        dest: "{{ deployment_key_path }}"
+        mode: '0600'
+        owner: root
+      no_log: true
+      tags: always
+    
+    - name: Configure SSH to use deployment key
+      blockinfile:
+        path: /root/.ssh/config
+        create: yes
+        mode: '0600'
+        block: |
+          Host github.com
+            IdentityFile {{ deployment_key_path }}
+            StrictHostKeyChecking no
+      tags: always
+
+  roles:
+    - role: dependencies
+      tags: ['dependencies', 'setup']
+    
+    - role: app-deployment
+      tags: ['app', 'deployment']
+    
+    - role: nginx
+      tags: ['nginx', 'web']
+    
+    - role: ssl
+      tags: ['ssl', 'certificates']
+    
+    - role: cloudwatch
+      tags: ['monitoring', 'cloudwatch', 'logs']
+  
+  post_tasks:
+    - name: Remove deployment key from server
+      file:
+        path: "{{ deployment_key_path }}"
+        state: absent
+      no_log: true
+      tags: always
+    
+    - name: Remove SSH config for deployment key
+      blockinfile:
+        path: /root/.ssh/config
+        block: |
+          Host github.com
+            IdentityFile {{ deployment_key_path }}
+            StrictHostKeyChecking no
+        state: absent
+      tags: always
+    
+    - name: Verify application is responding
+      uri:
+        url: "http://localhost:{{ app_port }}"
+        status_code: 200
+        timeout: 10
+      register: app_health
+      retries: 5
+      delay: 3
+      until: app_health.status == 200
+      tags: ['verify']
+    
+    - name: Final deployment summary
+      debug:
+        msg:
+          - "========================================="
+          - "✅ DEPLOYMENT SUCCESSFUL"
+          - "Environment: {{ environment }}"
+          - "Domain: https://{{ domain_name }}"
+          - "Application Status: Running (Port {{ app_port }})"
+          - "CloudWatch Logs: {{ cloudwatch_log_groups.app }}"
+          - "========================================="
+      tags: always

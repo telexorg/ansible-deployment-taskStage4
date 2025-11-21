@@ -1,0 +1,18 @@
+
+---
+environment: staging
+git_branch: staging
+domain_name: stagingtoranaga.duckdns.org
+app_directory: "/var/www/toranagaTask-staging"
+app_port: 3000
+app_user: "toranaga"
+pm2_app_name: "toranagaTask-staging"
+enable_debug: true
+
+# CRITICAL: CloudWatch Log Groups (EXACT FORMAT)
+cloudwatch_log_groups:
+  app: "/ec2/staging/toranagaTask/app"
+  nginx_access: "/ec2/staging/toranagaTask/nginx-access"
+  nginx_error: "/ec2/staging/toranagaTask/nginx-error"
+
+aws_region: "us-east-1"

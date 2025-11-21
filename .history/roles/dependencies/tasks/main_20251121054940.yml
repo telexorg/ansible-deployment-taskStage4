@@ -1,0 +1,74 @@
+
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Upgrade all packages
+  apt:
+    upgrade: dist
+    autoremove: yes
+  tags: ['never', 'full-upgrade']
+
+- name: Install essential packages
+  apt:
+    name:
+      - curl
+      - wget
+      - git
+      - build-essential
+      - software-properties-common
+      - python3
+      - python3-pip
+      - nginx
+      - certbot
+      - python3-certbot-nginx
+    state: present
+
+- name: Download Node.js setup script
+  get_url:
+    url: "https://deb.nodesource.com/setup_{{ nodejs_version }}.x"
+    dest: /tmp/nodesource_setup.sh
+    mode: '0755'
+
+- name: Run Node.js setup script
+  command: bash /tmp/nodesource_setup.sh
+  args:
+    creates: /etc/apt/sources.list.d/nodesource.list
+
+- name: Install Node.js
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+- name: Install PM2 globally
+  npm:
+    name: pm2
+    global: yes
+    state: present
+
+- name: Create application directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: '0755'
+  loop:
+    - "{{ app_directory }}"
+    - "/home/{{ app_user }}/.ssh"
+
+- name: Verify installations
+  shell: |
+    echo "Node: $(node --version)"
+    echo "NPM: $(npm --version)"
+    echo "PM2: $(pm2 --version)"
+    echo "Nginx: $(nginx -v 2>&1)"
+  register: versions
+  changed_when: false
+
+- name: Display installed versions
+  debug:
+    var: versions.stdout_lines

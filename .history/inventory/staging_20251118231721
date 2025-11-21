@@ -1,0 +1,5 @@
+[staging]
+staging-server ansible_host=YOUR_STAGING_IP ansible_user=ubuntu
+
+[staging:vars]
+environment=staging

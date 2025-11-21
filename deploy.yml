@@ -1,0 +1,119 @@
+---
+- name: Universal Deployment Playbook - toranagaTask
+  hosts: all
+  become: yes
+  gather_facts: yes
+  
+  vars:
+    git_deploy_key_path: "/tmp/git_deploy_key_{{ ansible_date_time.epoch }}"
+  
+  pre_tasks:
+    - name: Display deployment information
+      debug:
+        msg:
+          - "========================================="
+          - "🚀 TORANAGA TASK DEPLOYMENT"
+          - "Environment: {{ environment | upper }}"
+          - "Project: {{ project_name }}"
+          - "Server: {{ ansible_host }}"
+          - "Domain: {{ domain_name }}"
+          - "Branch: {{ git_branch }}"
+          - "Port: {{ app_port }}"
+          - "========================================="
+    
+    - name: Install sshpass for password authentication
+      apt:
+        name: sshpass
+        state: present
+        update_cache: yes
+    
+    - name: Create .ssh directory for root
+      file:
+        path: /root/.ssh
+        state: directory
+        mode: '0700'
+    
+    - name: Write Git deploy key
+      copy:
+        content: "{{ vault_git_deploy_key }}"
+        dest: "{{ git_deploy_key_path }}"
+        mode: '0600'
+      no_log: true
+      when: vault_git_deploy_key is defined
+    
+    - name: Configure SSH for GitHub
+      blockinfile:
+        path: /root/.ssh/config
+        create: yes
+        mode: '0600'
+        marker: "# {mark} ANSIBLE MANAGED - GITHUB"
+        block: |
+          Host github.com
+            IdentityFile {{ git_deploy_key_path }}
+            StrictHostKeyChecking no
+            UserKnownHostsFile=/dev/null
+      when: vault_git_deploy_key is defined
+
+  roles:
+    - role: dependencies
+      tags: ['dependencies', 'setup']
+    
+    - role: app-deployment
+      tags: ['app', 'deployment', 'clone']
+    
+    - role: nginx
+      tags: ['nginx', 'web']
+    
+    - role: ssl
+      tags: ['ssl', 'certificates']
+    
+    - role: cloudwatch
+      tags: ['cloudwatch', 'logs', 'monitoring']
+  
+  post_tasks:
+    - name: Remove Git deploy key
+      file:
+        path: "{{ git_deploy_key_path }}"
+        state: absent
+      no_log: true
+    
+    - name: Remove SSH config block
+      blockinfile:
+        path: /root/.ssh/config
+        marker: "# {mark} ANSIBLE MANAGED - GITHUB"
+        state: absent
+    
+    - name: Wait for application to start
+      wait_for:
+        port: "{{ app_port }}"
+        delay: 5
+        timeout: 60
+      ignore_errors: yes
+    
+    - name: Verify application is responding
+      uri:
+        url: "http://localhost:{{ app_port }}"
+        status_code: 200
+        timeout: 10
+      register: app_check
+      retries: 5
+      delay: 3
+      ignore_errors: yes
+    
+    - name: Deployment Summary
+      debug:
+        msg:
+          - "========================================="
+          - "✅ DEPLOYMENT COMPLETE"
+          - "Environment: {{ environment }}"
+          - "Domain: https://{{ domain_name }}"
+          - "Port: {{ app_port }}"
+          - "Directory: {{ app_directory }}"
+          - ""
+          - "CloudWatch Log Groups:"
+          - "  App: {{ cloudwatch_log_groups.app }}"
+          - "  Nginx Access: {{ cloudwatch_log_groups.nginx_access }}"
+          - "  Nginx Error: {{ cloudwatch_log_groups.nginx_error }}"
+          - ""
+          - "Next: Point {{ domain_name }} DNS to {{ ansible_host }}"
+          - "========================================="

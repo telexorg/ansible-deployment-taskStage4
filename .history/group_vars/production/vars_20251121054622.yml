@@ -1,0 +1,31 @@
+
+
+# CRITICAL: CloudWatch Log Groups (EXACT FORMAT)
+cloudwatch_log_groups:
+  app: "/ec2/production/{{ project_name }}/app"
+  nginx_access: "/ec2/production/{{ project_name }}/nginx-access"
+  nginx_error: "/ec2/production/{{ project_name }}/nginx-error"
+
+aws_region: "us-east-1" 
+
+
+
+
+
+---
+environment: production
+git_branch: main
+domain_name: prodtoranaga.duckdns.org
+app_directory: "/var/www/toranagaTask-production"
+app_port: 3001
+app_user: "ubuntu"
+pm2_app_name: "toranagaTask-production"
+enable_debug: false
+
+# CRITICAL: CloudWatch Log Groups (EXACT FORMAT)
+cloudwatch_log_groups:
+  app: "/ec2/production/toranagaTask/app"
+  nginx_access: "/ec2/production/toranagaTask/nginx-access"
+  nginx_error: "/ec2/production/toranagaTask/nginx-error"
+
+aws_region: "us-west-1"

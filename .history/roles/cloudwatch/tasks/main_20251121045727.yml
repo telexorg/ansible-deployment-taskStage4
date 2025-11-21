@@ -1,0 +1,11 @@
+---
+# Task 3.1 & 3.2: CloudWatch Agent with STRICT naming convention
+# CRITICAL: Log groups MUST follow format: /ec2/{env}/{project}/{component}
+
+- name: Create CloudWatch config from template
+  template:
+    src: cloudwatch-config.json.j2
+    dest: /opt/aws/amazon-cloudwatch-agent/etc/cloudwatch-config.json
+  notify: restart cloudwatch agent
+
+# More tasks will be added by CloudWatch team

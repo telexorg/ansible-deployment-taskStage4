@@ -1,0 +1,6 @@
+cat > inventory/staging << 'EOF'
+[staging]
+staging-server ansible_host=54.83.150.207 ansible_user=ubuntu ansible_ssh_private_key_file=/home/joshnick/.ssh/ansibleServerTask.pem
+
+[staging:vars]
+env_name=staging
